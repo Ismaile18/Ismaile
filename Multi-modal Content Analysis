@@ -1,0 +1,43 @@
+import re
+
+class TextModerationSystem:
+    def __init__(self, toxic_keywords):
+        self.toxic_keywords = set(toxic_keywords)
+
+    def clean_text(self, text):
+        text = text.lower()
+        text = re.sub(r'[^\w\s]', '', text)
+        return text
+
+    def analyze_text(self, text):
+        cleaned_text = self.clean_text(text)
+        words = set(cleaned_text.split())
+        flagged_words = words.intersection(self.toxic_keywords)
+
+        if flagged_words:
+            return {
+                "status": "flagged",
+                "flagged_words": list(flagged_words)
+            }
+        else:
+            return {
+                "status": "safe",
+                "flagged_words": []
+            }
+
+toxic_keywords = ["hate", "violence", "abuse", "racist", "offensive"]
+
+moderation_system = TextModerationSystem(toxic_keywords)
+
+# Example texts
+texts_to_analyze = [
+    "This message is clear and upbeat.",
+    "I despise this individual. This is abuse and unacceptable.",
+    "Let's engage in a productive discussion, no offensive words needed."
+]
+
+# Analyze each text
+for text in texts_to_analyze:
+    result = moderation_system.analyze_text(text)
+    print(f"Text: '{text}'")
+    print(f"Moderation Result: {result}\n")
