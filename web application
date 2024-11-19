@@ -1,0 +1,27 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+function ImageGenerator() {
+  const [prompt, setPrompt] = useState('');
+  const [image, setImage] = useState(null);
+
+  const generateImage = async () => {
+    const response = await axios.post('http://localhost:5000/generate-image', { prompt });
+    setImage(response.data.image);
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Enter prompt"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+      />
+      <button onClick={generateImage}>Generate Image</button>
+      {image && <img src={`data:image/png;base64,${image}`} alt="Generated" />}
+    </div>
+  );
+}
+
+export default ImageGenerator;
